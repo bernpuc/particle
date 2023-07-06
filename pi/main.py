@@ -3,6 +3,9 @@ from datetime import datetime
 import urllib.request
 from decimal import *
 
+# globals, for the moment
+pm25 = None
+sht = None
 
 def init():
     # libraries for pms5003
