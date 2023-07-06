@@ -83,4 +83,5 @@ def loop(pm25, sht):
             avg_aqi_env = 0
 
 if __name__ == "__main__":
-    loop(init())
+    pmt, sht = init()
+    loop(pmt, sht)
