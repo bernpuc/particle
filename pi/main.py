@@ -3,9 +3,6 @@ from datetime import datetime
 import urllib.request
 from decimal import *
 
-# globals, for the moment
-pm25 = None
-sht = None
 
 def init():
     # libraries for pms5003
@@ -23,9 +20,10 @@ def init():
     sht = adafruit_sht4x.SHT4x(i2c)
     print("Found SHT40 with serial number", hex(sht.serial_number))
     print("Current mode is: ", adafruit_sht4x.Mode.string[sht.mode])
+    return pm25, sht
 
 
-def loop():
+def loop(pm25, sht):
     # Interval to upload to thingspeak
     post_interval = 600	# 10 minutes
     post_time = datetime(2023,1,1)
@@ -85,5 +83,4 @@ def loop():
             avg_aqi_env = 0
 
 if __name__ == "__main__":
-    init()
-    loop()
+    loop(init())
