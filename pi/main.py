@@ -31,6 +31,10 @@ def loop(pm25, sht):
     post_interval = 600	# 10 minutes
     post_time = datetime(2023,1,1)
 
+    # Interval to print stdout
+    stdout_interval = 60
+    stdout_time = datetime(2023,1,1)
+
     # Interval to average AQI
     aqi_average_interval = 600
     aqi_average_time = datetime.now()
@@ -54,7 +58,7 @@ def loop(pm25, sht):
             avg_aqi_env = (a * myaqi_env) + (b * avg_aqi_env)
 
         except RuntimeError:
-            print("Unable to read from sensor, retrying...")
+            print("Unable to read from sensor (pms5003), retrying...")
             continue
         except IndexError:
             print("list index out of range error")
@@ -65,16 +69,17 @@ def loop(pm25, sht):
         temp_fahrenheit = temperature * 1.8 + 32
 
         # stdout
-        print("{:%Y-%m-%d %H:%M:%S}, AQI: {:0.1f}, {:0.1f} F, {:0.1f} %".format(datetime.now(), avg_aqi_env, temp_fahrenheit, relative_humidity))
+        if (datetime.now() -  stdout_time).total_seconds() > stdout_interval:
+            stdout_time = datetime.now()
+            print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
 
         # Post data to cloud server at specified intervals
         if (datetime.now() -  post_time).total_seconds() > post_interval:
-            print("Post data")
             post_time = datetime.now()
             # GET https://api.thingspeak.com/update?api_key=T33R8EOP0J4YNDU0&field1=0&field2=0&field3=0
             URL = 'https://api.thingspeak.com/update?'
             KEY = 'api_key=T33R8EOP0J4YNDU0'
-            HEADER = '&field1={:0.1f}&field2={:0.1f}&field3={:0.1f}'.format(avg_aqi_env,temp_fahrenheit,relative_humidity)
+            HEADER = '&field1={:}&field2={:0.1f}&field3={:0.1f}'.format(int(round(avg_aqi_env)),temp_fahrenheit,relative_humidity)
             NEW_URL = URL+KEY+HEADER
             data=urllib.request.urlopen(NEW_URL)
             print(data)
