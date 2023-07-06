@@ -3,19 +3,22 @@ from datetime import datetime
 import urllib.request
 from decimal import *
 
+# libraries for pms5003
+import aqi
+import serial
+from adafruit_pm25.uart import PM25_UART
+
+# libraries for sht40
+import board
+import adafruit_sht4x
 
 def init():
-    # libraries for pms5003
-    import aqi
-    import serial
-    from adafruit_pm25.uart import PM25_UART
+    # initialize pms5003
     reset_pin = None
     uart = serial.Serial("/dev/ttyS0", baudrate=9600, timeout=0.25)
     pm25 = PM25_UART(uart, reset_pin)
 
-    # libraries for sht40
-    import board
-    import adafruit_sht4x
+    # initialize sht40
     i2c = board.I2C()
     sht = adafruit_sht4x.SHT4x(i2c)
     print("Found SHT40 with serial number", hex(sht.serial_number))
