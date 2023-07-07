@@ -1,20 +1,21 @@
 import socketserver
 import http.server
+import subprocess
 
 PORT = 8000
 
 def some_function():
-    return "<http><body>some_function got called<body></http>"
+    filename = '../pi/nohup.out'
+    line = subprocess.check_output(['tail', '-1', filename])
+    with open("index.html", "w") as fh:
+        fh.write("<html><head></head><body>" + str(line) + "<body></html>")
 
 class MyHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        conditions_report = "FOOBAR"
         if self.path == '/conditions':
-            # Insert your code here
-            conditions_report = some_function()
-
-        self.send_response(200, conditions_report)
-        self.end_headers()
+            some_function()
+            self.path = '/index.html'
+            return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
 httpd = socketserver.TCPServer(("", PORT), MyHandler)
 httpd.serve_forever()
