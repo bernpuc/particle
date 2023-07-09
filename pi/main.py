@@ -1,3 +1,4 @@
+import sys
 from time import sleep
 from datetime import datetime
 import urllib.request
@@ -72,6 +73,7 @@ def loop(pm25, sht):
         if (datetime.now() -  stdout_time).total_seconds() > stdout_interval:
             stdout_time = datetime.now()
             print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
+            sys.stdout.flush()
 
         # Post data to cloud server at specified intervals
         if (datetime.now() -  post_time).total_seconds() > post_interval:
