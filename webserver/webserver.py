@@ -12,7 +12,7 @@ def some_function():
     filename = '../pi/nohup.out'
     line = subprocess.check_output(['tail', '-1', filename], text=True)
     rawdata = line.split(',')
-    rawdata[0] = datetime.strptime(rawdata[0],'%Y-%m-%d %H:%M:%S').strftime('%a %d %b %Y, %I:%M%p')
+    rawdata[0] = datetime.strptime(rawdata[0],'%Y-%m-%d %H:%M:%S').strftime('%a %B %d %Y, %I:%M%p')
     with open("index.html", "w") as fh:
         fh.write("<html><head></head><body>\n")
         for item in rawdata:
