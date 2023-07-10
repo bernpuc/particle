@@ -100,11 +100,11 @@ def loop(pm25, sht):
             print(data)
 
         # Post to Griffin's server
-        if (time_now -  post_time_g).total_seconds() > post_interval_g:
+        if (time_now - post_time_g).total_seconds() > post_interval_g:
             post_time_g = time_now
             URL = 'https://api.terramisha.com/api/postWeatherParameter'
             HEADERS = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            JSONDATA = {'date':'2023-07-10T13:10:21Z','temperatureF': temp_fahrenheit, 'aqi': int(round(avg_aqi_env)), 'humidityPcntg': relative_humidity}
+            JSONDATA = {'date':datetime.utcnow()+'Z','temperatureF': temp_fahrenheit, 'aqi': int(round(avg_aqi_env)), 'humidityPcntg': relative_humidity}
             r = requests.post(URL, data=json.dumps(JSONDATA), headers=HEADERS)
             print(r)
 
