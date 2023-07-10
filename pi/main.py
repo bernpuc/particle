@@ -3,6 +3,8 @@ from time import sleep
 from datetime import datetime
 import urllib.request
 from decimal import *
+import requests
+import json
 
 # libraries for pms5003
 import aqi
@@ -12,6 +14,9 @@ from adafruit_pm25.uart import PM25_UART
 # libraries for sht40
 import board
 import adafruit_sht4x
+
+# API KEY For thingspeak
+API_KEY_THINGSPEAK = 'T33R8EOP0J4YNDU0'
 
 def init():
     # initialize pms5003
@@ -31,6 +36,10 @@ def loop(pm25, sht):
     # Interval to upload to thingspeak
     post_interval = 600	# 10 minutes
     post_time = datetime(2023,1,1)
+
+    # Interval to upload to Griffin server
+    post_interval_g = 10	# 10 minutes
+    post_time_g = datetime(2023,1,1)
 
     # Interval to print stdout
     stdout_interval = 60
@@ -69,28 +78,46 @@ def loop(pm25, sht):
         temperature, relative_humidity = sht.measurements
         temp_fahrenheit = temperature * 1.8 + 32
 
+        time_now = datetime.now()
+        
         # stdout
-        if (datetime.now() -  stdout_time).total_seconds() > stdout_interval:
-            stdout_time = datetime.now()
+        if (time_now -  stdout_time).total_seconds() > stdout_interval:
+            stdout_time = time_now
             print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
             sys.stdout.flush()
 
-        # Post data to cloud server at specified intervals
-        if (datetime.now() -  post_time).total_seconds() > post_interval:
-            post_time = datetime.now()
+        # Post data to thingspeak server at specified intervals
+        if (time_now -  post_time).total_seconds() > post_interval:
+            post_time = time_now
             # GET https://api.thingspeak.com/update?api_key=T33R8EOP0J4YNDU0&field1=0&field2=0&field3=0
             URL = 'https://api.thingspeak.com/update?'
-            KEY = 'api_key=T33R8EOP0J4YNDU0'
-            HEADER = '&field1={:}&field2={:0.1f}&field3={:0.1f}'.format(int(round(avg_aqi_env)),temp_fahrenheit,relative_humidity)
-            NEW_URL = URL+KEY+HEADER
+            KEY = 'api_key='+API_KEY_THINGSPEAK
+            FIELD1 = '&field1={:}'.format(int(round(avg_aqi_env)))
+            FIELD2 = '&field2={:0.1f}'.format(temp_fahrenheit)
+            FIELD3 = '&field3={:0.1f}'.format(relative_humidity)
+            NEW_URL = URL+KEY+FIELD1+FIELD2+FIELD3
             data=urllib.request.urlopen(NEW_URL)
             print(data)
 
+        # Post to Griffin's server
+        if (time_now -  post_time_g).total_seconds() > post_interval_g:
+            post_time_g = time_now
+            URL = 'https://api.terramisha.com/api/postWeatherParameter'
+            HEADERS = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+            JSONDATA = {'date':'2023-07-10T13:10:21Z','temperatureF': temp_fahrenheit, 'aqi': int(round(avg_aqi_env)), 'humidityPcntg': relative_humidity}
+            r = requests.post(URL, data=json.dumps(JSONDATA), headers=HEADERS)
+            print(r)
+
         # Reset average aqi interval
-        if (datetime.now() - aqi_average_time).total_seconds() > aqi_average_interval:
-            aqi_average_time = datetime.now()
+        if (time_now - aqi_average_time).total_seconds() > aqi_average_interval:
+            aqi_average_time = time_now
             N = 0
             avg_aqi_env = 0
+
+
+def makeJsonBody():
+    return ''
+
 
 if __name__ == "__main__":
     pmt, sht = init()
