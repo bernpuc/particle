@@ -38,7 +38,7 @@ def loop(pm25, sht):
     post_time = datetime(2023,1,1)
 
     # Interval to upload to Griffin server
-    post_interval_g = 10	# 10 minutes
+    post_interval_g = 600	# 10 minutes
     post_time_g = datetime(2023,1,1)
 
     # Interval to print stdout
