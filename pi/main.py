@@ -104,7 +104,10 @@ def loop(pm25, sht):
             post_time_g = time_now
             URL = 'https://api.terramisha.com/api/postWeatherParameter'
             HEADERS = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-            JSONDATA = {'date':datetime.utcnow()+'Z','temperatureF': temp_fahrenheit, 'aqi': int(round(avg_aqi_env)), 'humidityPcntg': relative_humidity}
+            JSONDATA = {'date':datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+                        'temperatureF': temp_fahrenheit, 
+                        'aqi': int(round(avg_aqi_env)), 
+                        'humidityPcntg': relative_humidity}
             r = requests.post(URL, data=json.dumps(JSONDATA), headers=HEADERS)
             print(r)
 
