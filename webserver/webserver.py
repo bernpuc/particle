@@ -9,7 +9,7 @@ def some_function():
     # Pull last line from file (most current reading)
     # Convert timestamp to human readable format
     # Output new html file
-    filename = '../pi/nohup.out'
+    filename = '/home/bernp/sensorlog.txt'
     line = subprocess.check_output(['tail', '-1', filename], text=True)
     rawdata = line.split(',')
     rawdata[0] = datetime.strptime(rawdata[0],'%Y-%m-%d %H:%M:%S').strftime('%a %B %d %Y, %I:%M%p')
