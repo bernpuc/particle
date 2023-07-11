@@ -18,6 +18,10 @@ import adafruit_sht4x
 # API KEY For thingspeak
 API_KEY_THINGSPEAK = 'T33R8EOP0J4YNDU0'
 
+# Local file for output
+LOG_FILE = "/var/log/weatherstation/sensorslogs.txt"
+sensorhandle = None
+
 def init():
     # initialize pms5003
     reset_pin = None
@@ -29,7 +33,12 @@ def init():
     sht = adafruit_sht4x.SHT4x(i2c)
     print("Found SHT40 with serial number", hex(sht.serial_number))
     print("Current mode is: ", adafruit_sht4x.Mode.string[sht.mode])
+
+    # Open log file for sensor data output
+    sensorhandle = open(LOG_FILE, "a")
+    
     return pm25, sht
+
 
 
 def loop(pm25, sht):
@@ -85,6 +94,8 @@ def loop(pm25, sht):
             stdout_time = time_now
             print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
             sys.stdout.flush()
+            if sensorhandle:
+                sensorhandle.write("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
 
         # Post data to thingspeak server at specified intervals
         if (time_now -  post_time).total_seconds() > post_interval:
