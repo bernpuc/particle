@@ -34,9 +34,6 @@ def init():
     print("Found SHT40 with serial number", hex(sht.serial_number))
     print("Current mode is: ", adafruit_sht4x.Mode.string[sht.mode])
 
-    # Open log file for sensor data output
-    sensorhandle = open(LOG_FILE, "a")
-    
     return pm25, sht
 
 
@@ -59,6 +56,9 @@ def loop(pm25, sht):
     aqi_average_time = datetime.now()
     N = 0
     avg_aqi_env = 0
+
+    # Open log file for sensor data output
+    sensorhandle = open(LOG_FILE, "a")
 
     while True:
 
@@ -95,7 +95,8 @@ def loop(pm25, sht):
             print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
             sys.stdout.flush()
             if sensorhandle:
-                sensorhandle.write("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
+                sensorhandle.write("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %\n".format(datetime.now(), int(round(myaqi_env)), temp_fahrenheit, relative_humidity))
+                sensorhandle.flush()
 
         # Post data to thingspeak server at specified intervals
         if (time_now -  post_time).total_seconds() > post_interval:
