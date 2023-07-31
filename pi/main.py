@@ -108,10 +108,12 @@ def loop(pm25, sht):
             FIELD2 = '&field2={:0.1f}'.format(temp_fahrenheit)
             FIELD3 = '&field3={:0.1f}'.format(relative_humidity)
             NEW_URL = URL+KEY+FIELD1+FIELD2+FIELD3
-            data=urllib.request.urlopen(NEW_URL)
-            print(data)
+# Posting to ThingSpeak is disabled
+#            data=urllib.request.urlopen(NEW_URL)
+#            print(data)
 
-        # Post to Griffin's server
+        # Post to Grafana server
+        # https://library.terramisha.com
         if (time_now - post_time_g).total_seconds() > post_interval_g:
             post_time_g = time_now
             URL = 'https://api.terramisha.com/api/postWeatherParameter'
