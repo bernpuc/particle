@@ -92,7 +92,8 @@ def loop(pm25, sht):
         # stdout
         if (time_now -  stdout_time).total_seconds() > stdout_interval:
             stdout_time = time_now
-            print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
+# Console print disabled. So only error messages get displayed in the service status call (when run as a system service)
+#            print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
             sys.stdout.flush()
             if sensorhandle:
                 sensorhandle.write("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %\n".format(datetime.now(), int(round(myaqi_env)), temp_fahrenheit, relative_humidity))
