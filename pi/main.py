@@ -15,6 +15,9 @@ from adafruit_pm25.uart import PM25_UART
 import board
 import adafruit_sht4x
 
+# libraries for uptimed
+import uptime
+
 # API KEY For thingspeak
 API_KEY_THINGSPEAK = 'T33R8EOP0J4YNDU0'
 
@@ -53,9 +56,13 @@ def loop(pm25, sht):
 
     # Interval to average AQI
     aqi_average_interval = 600
-    aqi_average_time = datetime.now()
+    aqi_average_time = datetime(2023,1,1)
     N = 0
     avg_aqi_env = 0
+
+    # Interval to upload system uptime
+    uptime_interval = 3600
+    uptime_time = datetime(2023,1,1)
 
     # Open log file for sensor data output
     sensorhandle = open(LOG_FILE, "a")
@@ -131,6 +138,15 @@ def loop(pm25, sht):
             aqi_average_time = time_now
             N = 0
             avg_aqi_env = 0
+
+        # Check system uptime
+        if (time_now - uptime_time).total_seconds() > uptime_interval:
+            uptime_time = time_now
+            up = uptime.get_percent_uptime()
+            if up is not None:
+                print("Percent Uptime:", up)
+            else:
+                print("Unable to retrieve percent uptime.")
 
 
 def makeJsonBody():
