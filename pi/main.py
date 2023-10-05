@@ -103,7 +103,7 @@ def loop(pm25, sht):
 #            print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
             sys.stdout.flush()
             if sensorhandle:
-                sensorhandle.write("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %\n".format(datetime.now(), int(round(myaqi_env)), temp_fahrenheit, relative_humidity))
+                sensorhandle.write("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} % RH\n".format(datetime.now(), int(round(myaqi_env)), temp_fahrenheit, relative_humidity))
                 sensorhandle.flush()
 
         # Post data to thingspeak server at specified intervals
@@ -116,9 +116,8 @@ def loop(pm25, sht):
             FIELD2 = '&field2={:0.1f}'.format(temp_fahrenheit)
             FIELD3 = '&field3={:0.1f}'.format(relative_humidity)
             NEW_URL = URL+KEY+FIELD1+FIELD2+FIELD3
-# Posting to ThingSpeak is disabled
-#            data=urllib.request.urlopen(NEW_URL)
-#            print(data)
+            data=urllib.request.urlopen(NEW_URL)
+            print(data)
 
         # Post to Grafana server
         # https://library.terramisha.com
@@ -130,8 +129,9 @@ def loop(pm25, sht):
                         'temperatureF': temp_fahrenheit, 
                         'aqi': int(round(avg_aqi_env)), 
                         'humidityPcntg': relative_humidity}
-            r = requests.post(URL, data=json.dumps(JSONDATA), headers=HEADERS)
-            print(r)
+# Posting to grafana is disabled 
+#           r = requests.post(URL, data=json.dumps(JSONDATA), headers=HEADERS)
+#            print(r)
 
         # Reset average aqi interval
         if (time_now - aqi_average_time).total_seconds() > aqi_average_interval:
