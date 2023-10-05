@@ -22,7 +22,7 @@ def some_function():
         for item in rawdata:
             fh.write("<H1>" + item + "</H1>\n")
 #        fh.write("<p><i>Conditions in Naugatuck, CT</i></p>\n")
-        fh.write("<p><i>Conditions in kitchen counter</i></p>\n")
+        fh.write("<p><i>Conditions in Bern's Office</i></p>\n")
         fh.write("<body></html>\n")
 
 class MyHandler(http.server.SimpleHTTPRequestHandler):
