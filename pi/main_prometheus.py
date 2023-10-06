@@ -31,6 +31,7 @@ gt.labels('celsius')
 gt.labels('fahrenheit')
 gh = Gauge('humidity', 'Relative humidity from sht40 sensor')
 ga = Gauge('AQI', 'Air Quality Index from pms5003 sensor')
+gu = Gauge('Uptime', 'Server uptime')
 
 def init():
     # initialize pms5003
@@ -53,13 +54,7 @@ def loop(pm25, sht):
     stdout_interval = 60
     stdout_time = datetime(2023,1,1)
 
-    # Interval to average AQI
-    aqi_average_interval = 600
-    aqi_average_time = datetime(2023,1,1)
-    N = 0
-    avg_aqi_env = 0
-
-    # Interval to upload system uptime
+    # Interval to update system uptime
     uptime_interval = 3600
     uptime_time = datetime(2023,1,1)
 
@@ -77,10 +72,6 @@ def loop(pm25, sht):
                 (aqi.POLLUTANT_PM10, aqdata["pm10 env"]),
                 (aqi.POLLUTANT_PM25, aqdata["pm25 env"])
             ])
-            N = Decimal(N + 1)
-            a = Decimal(1/N)
-            b = Decimal(1 - a)
-            avg_aqi_env = (a * myaqi_env) + (b * avg_aqi_env)
 
         except RuntimeError:
             print("Unable to read from sensor (pms5003), retrying...")
@@ -99,25 +90,17 @@ def loop(pm25, sht):
         gh.set(relative_humidity)
         ga.set(myaqi_env)
 
-
         time_now = datetime.now()
         
         # stdout
         if (time_now -  stdout_time).total_seconds() > stdout_interval:
             stdout_time = time_now
 # Console print disabled. So only error messages get displayed in the service status call (when run as a system service)
-#            print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(avg_aqi_env)), temp_fahrenheit, relative_humidity))
+#            print("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} %".format(datetime.now(), int(round(myaqi_env)), temp_fahrenheit, relative_humidity))
 #            sys.stdout.flush()
             if sensorhandle:
                 sensorhandle.write("{:%Y-%m-%d %H:%M:%S}, AQI: {:}, {:0.1f} F, {:0.1f} % RH\n".format(datetime.now(), int(round(myaqi_env)), temp_fahrenheit, relative_humidity))
                 sensorhandle.flush()
-
-
-        # Reset average aqi interval
-        if (time_now - aqi_average_time).total_seconds() > aqi_average_interval:
-            aqi_average_time = time_now
-            N = 0
-            avg_aqi_env = 0
 
         # Check system uptime
         if (time_now - uptime_time).total_seconds() > uptime_interval:
@@ -125,15 +108,13 @@ def loop(pm25, sht):
             up = uptime.get_percent_uptime()
             if up is not None:
                 print("Percent Uptime:", up)
+                gu.set(up)
             else:
                 print("Unable to retrieve percent uptime.")
 
 
-def makeJsonBody():
-    return ''
-
-
 if __name__ == "__main__":
+    # prometheus will scrape at this address for metrics
     metrics_port = 8001
     start_http_server(metrics_port)
     pmt, sht = init()
