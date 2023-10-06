@@ -1,0 +1,15 @@
+[Unit]
+Description=Prometheus Server
+Documentation=https://prometheus.io/docs/introduction/overview/
+After=network-online.target
+
+[Service]
+User=bernp
+Restart=always
+
+ExecStart=/home/bernp/prometheus/prometheus \
+  --config.file=/home/bernp/prometheus/prometheus.yml \
+  --storage.tsdb.path=/home/bernp/prometheus/data
+
+[Install]
+WantedBy=multi-user.target

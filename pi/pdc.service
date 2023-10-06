@@ -1,0 +1,14 @@
+[Unit]
+Description=Private Datasource Connect Agent
+After=network-online.target
+
+[Service]
+ExecStart=/bin/sh -c /home/bernp/grafana-pdc/start_pdc
+WorkingDirectory=/home/bernp/grafana-pdc
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=bernp
+
+[Install]
+WantedBy=multi-user.target
