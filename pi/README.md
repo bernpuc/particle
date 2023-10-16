@@ -18,7 +18,8 @@ There are 4 system services configured to run the various processes.
 
 ### Diagram
 ![Alt System Diagram](./system_diagram.png)
-
+## Example Dashboard on Grafana
+![Alt Weatherstation dashboard](grafana_dash.png)
 ## Helpful Links
 https://opensource.com/article/21/7/home-temperature-raspberry-pi-prometheus
 
