@@ -1,0 +1,15 @@
+[Unit]
+Description=REST API relay server for prometheus (Python Script)
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 relay_prometheus.py
+WorkingDirectory=/home/bernp/sourcecode/particle/pi
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=bernp
+
+[Install]
+WantedBy=multi-user.target
+
