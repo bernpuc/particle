@@ -12,11 +12,6 @@ gt = Gauge('temperature', 'Temperature from sht40 sensor', ['scale'])
 gt.labels('celsius')
 gt.labels('fahrenheit')
 
-def loop():
-
-    while True:
-        sleep(1)
-
 
 class MyRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -61,5 +56,4 @@ if __name__ == "__main__":
 
     # Create a new process for the web server
     start_web_server()
-#    loop()
 
