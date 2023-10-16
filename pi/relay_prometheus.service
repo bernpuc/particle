@@ -1,9 +1,9 @@
 [Unit]
-Description=AQI and Temp/RH Sensor Monitor (Python Script)
+Description=REST API relay server for prometheus (Python Script)
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 main_prometheus.py
+ExecStart=/usr/bin/python3 relay_prometheus.py
 WorkingDirectory=/home/bernp/sourcecode/particle/pi
 StandardOutput=inherit
 StandardError=inherit
