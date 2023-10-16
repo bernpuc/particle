@@ -1,4 +1,16 @@
 # Weather Station on the Raspberry Pi 4
+## Description of System
+### Hardware
+Raspberry Pi 4 running Ubuntu
+
+Two sensors are directly connected to the Pi:
+1. SHT40 Temperature and Humidity
+2. PMS5003 Particle Sensor
+
+Arduino NodeMCU WiFi module with a thermistor temperature probe
+
+### Software
+
 ## Data Handling
 Install Prometheus and configure it to read the new target address used by prometheus-client below.
 
