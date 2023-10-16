@@ -10,17 +10,11 @@ Two sensors are directly connected to the Pi:
 Arduino NodeMCU WiFi module with a thermistor temperature probe
 
 ### Software
-
-## Data Handling
-Install Prometheus and configure it to read the new target address used by prometheus-client below.
-
-Install prometheus-client library
-
-Modify pi/main_prometheus.py to store sensor readings in prometheus_client.Gauge() objects.
-
-Install Grafana's PDC service - Private Datasource Connect service
-
-Configure Grafana data source for Prometheus/PDC
+There are 4 system services configured to run the various processes.
+1. aqi_pi.service - Python script which initializes and monitors the two direct-attached sensors. Implements the prometheus_client which exposes the http port 8001 with metrics data.
+2. pdc.service - Private Datasource Connect service which allows Grafana cloud to access the prometheus database on the Pi without exposing any ports other than 80, 443.
+3. prometheus.service - Prometheus database service which stores metrics and exposes them to Grafana cloud.
+4. relay_prometheus.service - REST API server to GET temperature metrics from external sensor. Implements the prometheus_client which exposes the http port 8002 with metrics data.
 
 ## Helpful Links
 https://opensource.com/article/21/7/home-temperature-raspberry-pi-prometheus
