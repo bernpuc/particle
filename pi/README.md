@@ -16,6 +16,9 @@ There are 4 system services configured to run the various processes.
 3. prometheus.service - Prometheus database service which stores metrics and exposes them to Grafana cloud.
 4. relay_prometheus.service - REST API server to GET temperature metrics from external sensor. Implements the prometheus_client which exposes the http port 8002 with metrics data.
 
+### Diagram
+![Alt System Diagram](./system_diagram.png)
+
 ## Helpful Links
 https://opensource.com/article/21/7/home-temperature-raspberry-pi-prometheus
 
