@@ -3,7 +3,7 @@ Description=AQI and Temp/RH Sensor Monitor (Python Script)
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 main.py
+ExecStart=/usr/bin/python3 main_prometheus.py
 WorkingDirectory=/home/bernp/sourcecode/particle/pi
 StandardOutput=inherit
 StandardError=inherit
