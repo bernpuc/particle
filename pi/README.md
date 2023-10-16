@@ -23,8 +23,8 @@ There are 4 system services configured to run the various processes.
 https://opensource.com/article/21/7/home-temperature-raspberry-pi-prometheus
 
 ## Diagnosing Failure
-1. Check main_prometheus.py is running
-2. Check prometheus_client is exporting data at localhost:8001
+1. Check main_prometheus.py is running and prometheus_client is exporting data at localhost:8001
+2. Check relay_prometheus.py is running and prometheus_client is exporting data at localhost:8002
 3. Check prometheus server is exporting data at localhost:9090
 4. Check Private Datasource Connect (PDC) service is running
-5. Check IP address is still the same
+5. Check IP address is still the same - this is in reference to the fact that Grafana PDC configuration needs an actual IP address, cannot use localhost:9090.
