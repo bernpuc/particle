@@ -20,17 +20,18 @@ gt.labels('fahrenheit')
 
 class MyRequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        #Parse the temperature value from the path
-        regex = r"=\d+\.\d+"
-        match = re.search(regex, self.path)
+        pattern = re.compile(r'/update\?temperature=([\d.]+)&id=([\w%]+)&units=([\w]+)')
+        match = pattern.search(self.path)
         if match:
+            temperature = match.group(1)
+            id_value = match.group(2)
+            units = match.group(3)
+
             self.send_response(200)
-            value = match.group(0)[1:]
-            gt.labels('fahrenheit').set(value)
+            gt.labels(units.lower()).set(temperature)
         else:
             self.send_response(404)
         self.end_headers()
-
 
 # Define a function to start the web server
 def start_web_server(PORT):
