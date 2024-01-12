@@ -29,5 +29,12 @@ TODO:
 1. Check main_prometheus.py is running and prometheus_client is exporting data at localhost:8001
 2. Check relay_prometheus.py is running and prometheus_client is exporting data at localhost:8002
 3. Check prometheus server is exporting data at localhost:9090
-4. Check Private Datasource Connect (PDC) service is running. (sudo systemctl status pdc.service) Check if there is an error message about an expired certificate. Has happened twice despite creating the certificate with no expiration.
+4. Check Private Datasource Connect (PDC) service is running.
+Check if there is an error message about an expired certificate. Has happened twice despite creating the certificate with no expiration.*
+```bash
+sudo systemctl status pdc.service
+```
 5. Check IP address is still the same - this is in reference to the fact that Grafana PDC configuration needs an actual IP address, cannot use localhost:9090.
+
+
+*-To generate a new certificate, login to Grafana. Under Optoins hamburger click Connections, click Private data source connection. Select one of the connectins. Look at the tokens. Then go to Access Policies page.
