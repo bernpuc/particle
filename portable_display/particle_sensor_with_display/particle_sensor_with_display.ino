@@ -13,9 +13,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #include "PMS.h"
 #include <SoftwareSerial.h>
-SoftwareSerial Serial1(2, 3); // RX, TX
+SoftwareSerial SerialPMS(2, 3); // RX, TX
  
-PMS pms(Serial1);
+PMS pms(SerialPMS);
 PMS::DATA data;
 
 /* Function Declarations */
@@ -34,7 +34,7 @@ void UpdatePM10(uint16_t count);
 uint16_t AQICalculator(uint16_t pm25, uint16_t pm10);
 
 void setup(void){
-  Serial1.begin(9600);        // Communication with PMS5003 sensor
+  SerialPMS.begin(9600);        // Communication with PMS5003 sensor
 
   Serial.begin(115200);       // Start the Serial communication to send messages to the computer
 
@@ -137,7 +137,7 @@ void writeData4(char *buf)
   display.display();
 }
 
-void writeHeader1(char *buf)
+void writeHeader1(const char *buf)
 {
   display.fillRect(0, 0, 128, 16, SSD1306_BLACK);
   display.setTextSize(2); // Draw 2X-scale text
@@ -145,7 +145,7 @@ void writeHeader1(char *buf)
   display.println(buf);
   display.display();
 }
-void writeHeader2(char *buf)
+void writeHeader2(const char *buf)
 {
   display.fillRect(0, 16, 128, 16, SSD1306_BLACK);
   display.setTextSize(2);
@@ -153,7 +153,7 @@ void writeHeader2(char *buf)
   display.println(buf);
   display.display();
 }
-void writeHeader3(char *buf)
+void writeHeader3(const char *buf)
 {
   display.fillRect(0, 32, 128, 16, SSD1306_BLACK);
   display.setTextSize(2);
@@ -161,7 +161,7 @@ void writeHeader3(char *buf)
   display.println(buf);
   display.display();
 }
-void writeHeader4(char *buf)
+void writeHeader4(const char *buf)
 {
   display.fillRect(0, 48, 128, 16, SSD1306_BLACK);
   display.setTextSize(2);
@@ -230,5 +230,5 @@ uint16_t AQICalculator(uint16_t pm25, uint16_t pm10)
     }
     
   }
-  return (aqi_10 > aqi_2_5) ? (uint16_t)aqi_10 : (uint16_t)aqi_2_5;
+  return max(aqi_10, aqi_2_5);
 }
