@@ -17,15 +17,13 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 #define DISPLAY_OFFSET 10
 #include "PMS.h"
-//#include <SoftwareSerial.h>
-//SoftwareSerial SerialPMS(2, 3); // RX, TX
  
 PMS pms(Serial2);
 PMS::DATA data;
 
 /* Global variables */
 char data_buf[12];
-uint64_t timeout = 0;
+unsigned long timeout = 0;
 unsigned long timer = 0;
 bool showblip = false;
 bool swapdata = true;   // start true so the AQI shows up first
@@ -63,14 +61,11 @@ void setup(void)
   }
 
   // Clear the buffer
-  display.clearDisplay();
   // Foreground white, Background black
   display.setTextColor(SSD1306_WHITE, SSD1306_BLACK);
   display.setFont(&FreeMono9pt7b);
   display.clearDisplay();
-
-  delay(10);
-  Serial.println('\n');
+  writeHeader1("Starting...");
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, LOW);
@@ -87,7 +82,6 @@ void setup(void)
   sht4.setPrecision(SHT4X_HIGH_PRECISION);
   sht4.setHeater(SHT4X_NO_HEATER);
 
-  writeHeader1("Starting...");
 
   pinMode(buttonpin, INPUT);
   digitalWrite(buttonpin, HIGH);
@@ -95,7 +89,7 @@ void setup(void)
 
 void loop(void)
 {
-  if ((millis() - timeout) > 5000)
+  if ((millis() - timeout) > 8000 || timeout == 0)
   {
     timeout = millis();
     if (swapdata)
@@ -146,22 +140,34 @@ void loop(void)
 /* Returns true when the button changes state to pressed. false otherwise */
 bool buttonPressed(byte buttonpin)
 {
-  byte oldbutton = 1;
-  byte button = digitalRead(buttonpin);
-  if (button != oldbutton)
+  static byte button;
+  static byte lastButtonState = 1;
+  static unsigned long lastDebounceTime = 0;
+  unsigned long debounceDelay = 250;
+  byte reading;
+
+  reading = digitalRead(buttonpin);
+
+  if (reading != lastButtonState)
   {
-    // button state changed
-    oldbutton = button;
-    if (!button)
+    lastDebounceTime = millis();
+    lastButtonState = reading;
+  }
+
+  if ((millis() - lastDebounceTime) > debounceDelay)
+  {
+    if (button != lastButtonState)
     {
-      // button is closed
-      return true;
+      // button state changed
+      button = lastButtonState;
+      if (!button)
+      {
+        // button is closed
+        return true;
+      }
     }
   }
-  else
-  {
-    // button is the same
-  }
+
   return false;
 }
 
