@@ -1,7 +1,7 @@
 Couple of notes to help debug the local start-up services
 ### Check Grafana connectivity
-- sudo systemctl status pdc.service
-Should have something like this:
+Run this from terminal ```sudo systemctl status pdc.service```  
+Should have something like this:  
 ```
 Sep 23 11:39:14 raspberrypi sh[295229]: debug2: channel 0: read<=0 rfd 4 len 0
 Sep 23 11:39:14 raspberrypi sh[295229]: debug2: channel 0: read failed
@@ -14,8 +14,8 @@ Sep 23 11:39:14 raspberrypi sh[295229]: debug2: channel_input_status_confirm: ty
 Sep 23 11:39:14 raspberrypi sh[295229]: debug2: shell request accepted on channel 0
 Sep 23 11:39:14 raspberrypi sh[295229]: This is Grafana Private Datasource Connect!
 ```
-
-Restart it if there is an error.
+Restart it if there is an error.  
+```sudo systemctl restart pdc.service```
 
 ## Four system service files
 In /etc/systemd/system/
