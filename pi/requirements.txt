@@ -1,0 +1,4 @@
+python-aqi
+pyserial
+adafruit-circuitpython-pm25
+adafruit-circuitpython-sht4x
